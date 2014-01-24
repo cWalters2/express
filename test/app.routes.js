@@ -4,9 +4,13 @@ var express = require('../')
   , request = require('./support/http');
 
 describe('app.routes', function(){
+
+  // NO! jesus christ no routes
+  return;
+
   it('should be initialized', function(){
     var app = express();
-    app.routes.should.eql({});
+    app.routes.should.eql([]);
   })
 
   it('should be populated with routes', function(){
@@ -15,15 +19,16 @@ describe('app.routes', function(){
     app.get('/', function(req, res){});
     app.get('/user/:id', function(req, res){});
 
-    var get = app.routes.get;
-    get.should.have.length(2);
+    app.routes.should.have.length(2);
 
-    get[0].path.should.equal('/');
-    get[0].method.should.equal('get');
-    get[0].regexp.toString().should.equal('/^\\/\\/?$/i');
+    var route = app.routes[0];
+    route.path.should.equal('/');
+    route.methods.should.have.properties('get');
+    route.regexp.toString().should.equal('/^\\/\\/?$/i');
 
-    get[1].path.should.equal('/user/:id');
-    get[1].method.should.equal('get');
+    var route = app.routes[1];
+    route.path.should.equal('/user/:id');
+    route.methods.should.have.properties('get');
   })
 
   it('should be mutable', function(done){
@@ -32,14 +37,14 @@ describe('app.routes', function(){
     app.get('/', function(req, res){});
     app.get('/user/:id', function(req, res){});
 
-    var get = app.routes.get;
-    get.should.have.length(2);
+    app.routes.should.have.length(2);
 
-    get[0].path.should.equal('/');
-    get[0].method.should.equal('get');
-    get[0].regexp.toString().should.equal('/^\\/\\/?$/i');
+    var route = app.routes[0];
+    route.path.should.equal('/');
+    route.methods.should.have.properties('get');
+    route.regexp.toString().should.equal('/^\\/\\/?$/i');
 
-    get.splice(1);
+    app.routes.splice(1);
 
     request(app)
     .get('/user/12')
